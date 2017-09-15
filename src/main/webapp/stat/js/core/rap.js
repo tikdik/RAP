@@ -1827,7 +1827,7 @@ function deepCopy(o) {
                 el = getTd(id, key);
                 // oldValue = b.trim(el.innerHTML)
                 oldValue = b.trim(param.remark);
-                str += getEditInputHtml(oldValue, width, CONFIG.REMARK_MAX_LENGTH);
+                str += getTextareaHtml(oldValue, width, CONFIG.REMARK_MAX_LENGTH);
                 break;
             case "param-location":
                 width = CONFIG.DEFAULT_INPUT_WIDTH;
@@ -3043,6 +3043,8 @@ function deepCopy(o) {
         var code = b.event.getKeyCode(e);
         var prevParamId, nextParamId;
         if (code == 13) {
+            if (this.type == 'textarea')
+                return;
             // backup edit context
             var editContext = b.object.clone(_editContext);
             var paramId = ws.finishEdit();
@@ -4300,6 +4302,20 @@ function deepCopy(o) {
             value = util.escaper.escapeInH(value);
             return "<input id='" + ELEMENT_ID.EDIT_INPUT + "' class='edit-input' type='text' value='" + value +
                 "' style='width: " + width +"px' maxlength='" + maxLength + "' onblur='ws.finishEdit();' />";
+        }
+
+        /**
+         * get edit input element
+         */
+        function getTextareaHtml(value, width, maxLength) {
+            if (!value) {
+                value = '';
+            }
+            value = util.escaper.escapeInH(value);
+            return '<textarea id="' + ELEMENT_ID.EDIT_INPUT + '" style="width: ' + width + 'px; height: 150px; font-size: 12px; line-height: 1.5;"'
+                + ' rows="20" onblur="ws.finishEdit();">' + value + '</textarea>';
+            // return "<input id='" + ELEMENT_ID.EDIT_INPUT + "' class='edit-input' type='text' value='" + value +
+            //     "' style='width: " + width +"px' maxlength='" + maxLength + "' onblur='ws.finishEdit();' />";
         }
 
         /**
