@@ -10,6 +10,7 @@ public class Parameter implements java.io.Serializable {
     private String mockData;
     private String name;
     private String identifier;
+    private String location;
     private String identifierChange;
     private String remarkChange;
     private String dataType;
@@ -63,6 +64,14 @@ public class Parameter implements java.io.Serializable {
 
     public void setIdentifierChange(String identifierChange) {
         this.identifierChange = identifierChange;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getRemarkChange() {
@@ -174,6 +183,7 @@ public class Parameter implements java.io.Serializable {
         setName(parameter.getName());
         setRemark(parameter.getRemark());
         setValidator(parameter.getValidator());
+        setLocation(parameter.getLocation());
     }
 
     public List<Parameter> getParameterListOrdered() {
@@ -218,6 +228,8 @@ public class Parameter implements java.io.Serializable {
         stringBuilder.append("],");
         stringBuilder.append("\"validator\":\""
                 + StringUtils.escapeInJ(getValidator()) + "\",");
+        stringBuilder.append("\"location\":\""
+                + StringUtils.escapeInJ(getLocation()) + "\",");
         stringBuilder.append("\"dataType\":\""
                 + StringUtils.escapeInJ(getDataType()) + "\"}");
         return stringBuilder.toString();

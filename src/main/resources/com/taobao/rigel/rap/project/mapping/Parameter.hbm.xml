@@ -14,6 +14,9 @@
         <property name="identifier">
             <column name="identifier"/>
         </property>
+        <property name="location">
+            <column name="location"/>
+        </property>
         <property name="remark">
             <column name="remark"/>
         </property>

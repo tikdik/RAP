@@ -739,7 +739,7 @@ function deepCopy(o) {
      * add request parameter
      */
     p.addRequestParameter = function(actionId) {
-        var pNew = newParameter();
+        var pNew = newParameter("body");
         this.getAction(actionId).requestParameterList.push(pNew);
         return pNew.id;
     };
@@ -748,7 +748,7 @@ function deepCopy(o) {
      * add response parameter
      */
     p.addResponseParameter = function(actionId) {
-        var pNew = newParameter();
+        var pNew = newParameter("");
         this.getAction(actionId).responseParameterList.push(pNew);
         return pNew.id;
     };
@@ -766,7 +766,7 @@ function deepCopy(o) {
         return -1;
     };
 
-    function newParameter() {
+    function newParameter(location) {
         var obj = {};
         obj.id = p.generateId();
         obj.identifier = "";
@@ -775,6 +775,8 @@ function deepCopy(o) {
         obj.validator = "";
         obj.dataType = "";
         obj.parameterList = [];
+        if (location != null)
+            obj.location = location;
         return obj;
     }
 
@@ -1297,13 +1299,13 @@ function deepCopy(o) {
         },
         TEMPLATE = {            // static template
 
-            "REQUEST_BEGIN"                 : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td></tr>",
-            "REQUEST_BEGIN_EDIT"            : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td></tr>",
+            "REQUEST_BEGIN"                 : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
+            "REQUEST_BEGIN_EDIT"            : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
             "REQUEST_END"                   : "</table>",
             "REQUEST_PARAMETER_ADD_BUTTON"  : "<div class='btns-container'><a href=\"#\" class=\"btn btn-info btn-xs\" onclick=\"ws.addParam('request'); return false;\"><i class='glyphicon glyphicon-plus'></i>添加参数</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href\"#\" class='btn btn-default btn-xs' onclick=\"ws.importJSON(true); return false;\"><i class='glyphicon glyphicon-transfer'></i>导入JSON</a></div>",
 
-            "RESPONSE_BEGIN"                : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td></tr>",
-            "RESPONSE_BEGIN_EDIT"           : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td></tr>",
+            "RESPONSE_BEGIN"                : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
+            "RESPONSE_BEGIN_EDIT"           : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
             "RESPONSE_END"                  : "</table>",
             "RESPONSE_PARAMETER_ADD_BUTTON" : "<div class='btns-container'><a href=\"#\" class=\"btn btn-info btn-xs\" onclick=\"ws.addParam('response'); return false;\"><i class='glyphicon glyphicon-plus'></i>添加参数</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href\"#\" class='btn btn-default btn-xs' onclick=\"ws.importJSON(); return false;\"><i class='glyphicon glyphicon-transfer'></i>导入JSON</a></div>",
 
@@ -1827,6 +1829,13 @@ function deepCopy(o) {
                 oldValue = b.trim(param.remark);
                 str += getEditInputHtml(oldValue, width, CONFIG.REMARK_MAX_LENGTH);
                 break;
+            case "param-location":
+                width = CONFIG.DEFAULT_INPUT_WIDTH;
+                el = getTd(id, key);
+                // oldValue = b.trim(el.innerHTML)
+                oldValue = b.trim(param.location);
+                str += getEditInputHtml(oldValue, width, CONFIG.REMARK_MAX_LENGTH);
+                break;
             default:
                 throw Error("not implemented, key:" + key);
         }
@@ -2025,6 +2034,7 @@ function deepCopy(o) {
                 updateCurMTree();
                 break;
             case "param-name":
+            case "param-location":
             case "param-identifier":
             case "param-validator":
             case "param-remark":
@@ -4161,6 +4171,9 @@ function deepCopy(o) {
             str += getDataTypeEditSelectHtml(param.id, param.dataType);
             // for remarkFilter, escape after filter processed...
             str += getPTDHtml(param.id, param.remark, "remark");
+            if (param.hasOwnProperty("location") ) {
+                str += getPTDHtml(param.id, param.location, "location");
+            }
             str += "</tr>";
 
             for (var i = 0; i < parameterListNum; i++) {
