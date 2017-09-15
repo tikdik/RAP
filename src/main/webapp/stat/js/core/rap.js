@@ -4069,7 +4069,7 @@ function deepCopy(o) {
                 body += "<div class='item'><b>相关模板 </b><font color='red'>" + a.responseTemplate + "</font></div>";
             }
             if (a.description) {
-                body += "<div class='item'><b>接口描述 </b>" + processTextarea(a.description) + "</div>";
+                body += "<div class='item'><div style='float:left;'><b>接口描述 </b></div><div style='float:left;'>" + processTextarea(a.description) + "</div><div style='clear:both;'></div></div>";
             }
 
 
@@ -4096,23 +4096,31 @@ function deepCopy(o) {
             hasCode = txt.indexOf('@code') > -1,
             i = 0;
             if (txt.length > 100) {
-            var t1 = hasCode ? txt.replace(/(@code|@end)/gmi, '') : txt;
-            var reg = /@code([\s\S]*?)@end/gm;
+                var t1 = hasCode ? txt.replace(/(@code|@end)/gmi, '') : txt;
+                var reg = /@code([\s\S]*?)@end/gm;
 
-            arr[i++] = '<a class="div-a-desc-expander" href="#" onclick="this.innerHTML = this.innerHTML == \'展开\' ? \'收缩\' : \'展开\';baidu.each(baidu.dom.query(\'.description-area\'), function(ele){baidu.dom.toggle(ele);});baidu.each(baidu.dom.query(\'.description-area-partial\'), function(ele){baidu.dom.toggle(ele)}); return false;">展开</a>';
-            arr[i++] = '<div class="description-area-partial">';
-            arr[i++] = t1.substring(0, 100);
-            arr[i++] = '...</div>';
-            /**
-             * process code area
-             */
-            arr[i++] = '<div class="description-area" style="display:none;">';
-            arr[i++] = txt.replace(reg, '<div class="js-code-area">$1</div>');
-            arr[i++] = '</div>';
-            arr[i++] = '</div>';
+                arr[i++] = '<a class="div-a-desc-expander" href="#" onclick="this.innerHTML = this.innerHTML == \'展开\' ? \'收缩\' : \'展开\';baidu.each(baidu.dom.query(\'.description-area\'), function(ele){baidu.dom.toggle(ele);});baidu.each(baidu.dom.query(\'.description-area-partial\'), function(ele){baidu.dom.toggle(ele)}); return false;">展开</a>';
+                arr[i++] = '<div class="description-area-partial">';
+                arr[i++] = t1.substring(0, 100);
+                arr[i++] = '...</div>';
+                /**
+                 * process code area
+                 */
+                arr[i++] = '<div class="description-area" style="display:none;">';
+                arr[i++] = txt.replace(reg, '<div class="js-code-area">$1</div>');
+                arr[i++] = '</div>';
+                arr[i++] = '</div>';
+            } else if (txt.indexOf('\n') > -1){
+                var txts = txt.split('\n');
+                arr[i++] = '<ul style="list-style-type:none; padding:0">';
+                for (var index in txts) {
+                    arr[i++] = '<li>';
+                    arr[i++] = txts[index];
+                    arr[i++] = '</li>';
+                }
+                arr[i++] = '</ul>'
             } else {
-            arr[i++] = txt;
-
+                arr[i++] = txt;
             }
 
             return arr.join('');
