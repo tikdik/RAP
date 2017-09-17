@@ -4203,6 +4203,20 @@ function deepCopy(o) {
             if (type === 'remark') {
                 value = remarkFilter(value);
                 value = util.escaper.escapeInH(value);
+                var str = "<td id='td-param-" + type + "-" + id + "' class='td-param " + type +
+                    "' onclick='ws.edit(" + id + ", \"param-"+ type +
+                    "\");' >" + (level ? new Array(level + 1).join('&nbsp;&nbsp;&nbsp;&nbsp;') : '');
+                if (value.indexOf('\n') > -1){
+                    var txts = value.split('\n');
+                    for (var index in txts) {
+                        str += txts[index];
+                        str += '<br>';
+                    }
+                } else {
+                    str += value;
+                }
+                str += "</td>";
+                return str;
             } else if (type === 'identifier') {
                 value = identifierFilter(value);
             }
