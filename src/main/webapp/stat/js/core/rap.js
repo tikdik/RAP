@@ -1078,6 +1078,25 @@ function deepCopy(o) {
         return false;
     };
 
+    p.isPageInModule = function(pageId, moduleId) {
+        if (!moduleId) {
+            return false;
+        }
+        var module = p.getModule(moduleId);
+        if (!module) return false;
+
+        var pageList = module.pageList,
+            pageListNum = pageList.length;
+
+        for (var i = 0; i < pageListNum; i++) {
+            if (pageList[i].id == pageId) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     /**
      * get module id by action id
      */
@@ -1662,6 +1681,32 @@ function deepCopy(o) {
         }
 
         _curActionId = actionId;
+    };
+
+    ws.switchP = function(pageId) {
+        var page = p.getPage(pageId);
+        if (page === null) return;
+
+        if (!p.isPageInModule(pageId, _curModuleId)) {
+            console.error('invalid invoke: ws.switchA(', pageId, ")");
+            return;
+        }
+
+        getDiv(_curModuleId, "a").innerHTML = getPHtml(page);
+        renderA();
+
+
+        // var last = b.g('div-a-tree-node-' + _curActionId);
+        // var cur = b.g('div-a-tree-node-' + actionId);
+        //
+        // if (last && b.dom.hasClass(last, 'cur')) {
+        //     b.dom.removeClass(last, 'cur');
+        // }
+        // if (cur && !b.dom.hasClass(cur, 'cur')) {
+        //     b.dom.addClass(cur, 'cur');
+        // }
+        //
+        // _curActionId = actionId;
     };
 
     /**
@@ -3926,7 +3971,7 @@ function deepCopy(o) {
                 actionList.sort(modelSorterByName);
 
                 str += "<div class=\"more\">";
-                str += "<label ondblclick=\"ws.editP(" + page.id + "); return false;\">" + util.escaper.escapeInH(page.name);
+                str += "<label onclick=\"ws.switchP(" + page.id + "); return false;\">" + util.escaper.escapeInH(page.name);
                 if (_isEditMode) {
                     str += "<span class=\"div-p-control\"><a href=\"#\" class=\"edit-link\" onclick=\"ws.editP(" +
                         page.id + "); return false;\"><i class=\"glyphicon glyphicon-pencil\"></i></a><a href=\"#\" onclick=\"ws.removeP(" +
@@ -3998,6 +4043,27 @@ function deepCopy(o) {
                 return p1.identifier > p2.identifier ? 1 : -1;
             }
             return p1.id > p2.id ? 1 : -1;
+        }
+
+        function getPHtml(p) {
+            var head = "<h2 style='margin-top:20px;'>" + p.name + "<span style='font-size: 14px; color: #999;'>(id: " + p.id
+                    + ")</span></h2><div class='action-info'>",
+                body = "",
+                foot = "</div>";
+            if (p.introduction) {
+                body += "<div class='item'>";
+                if (p.introduction.indexOf('\n') > -1){
+                    var txts = p.introduction.split('\n');
+                    for (var index in txts) {
+                        body += txts[index];
+                        body += '<br>';
+                    }
+                } else {
+                    body += p.introduction;
+                }
+                body += "</div>";
+            }
+            return head + body + foot;
         }
 
         /**
