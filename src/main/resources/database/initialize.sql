@@ -113,6 +113,8 @@ CREATE TABLE tb_parameter
   COMMENT '数据类型 data type',
   remark     TEXT                   NULL
   COMMENT '备注/mock数据等 remark/mock data',
+  location  VARCHAR(32)             NULL
+  COMMENT '参数位置',
   expression VARCHAR(128)           NULL
   COMMENT '备用字段：表达式 backup column:expression',
   mock_data  TEXT                   NULL
