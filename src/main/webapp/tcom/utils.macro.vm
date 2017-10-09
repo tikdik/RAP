@@ -573,5 +573,6 @@ this.localDataId.value = ecui.get('$!ecId').save(this);
 <script type="text/javascript" src="${staticRoot}/bootstrap/js/bootstrap.min.js?_r=$!timeStamp"></script>
 <script type="text/javascript" src="${staticRoot}/js/core/ecui-1.1.0-br.js?_r=$!timeStamp"></script>
 <script type="text/javascript" src="${staticRoot}/js/ui/floater/js/floater.js?_r=$!timeStamp"></script>
+<script type="text/javascript" src="${staticRoot}/js/core/showdown.js?_r=$!timeStamp"></script>
 <script type="text/javascript" src="${staticRoot}/js/core/rap.js?_r=$!timeStamp"></script>
 #end

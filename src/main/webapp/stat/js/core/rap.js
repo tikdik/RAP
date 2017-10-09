@@ -2126,6 +2126,7 @@ function deepCopy(o) {
             this.doAddP();
         } else {
             this.doEditP();
+            this.switchP(b.g("editPFloater-id").value);
         }
     };
 
@@ -4052,15 +4053,18 @@ function deepCopy(o) {
                 foot = "</div>";
             if (p.introduction) {
                 body += "<div class='item'>";
-                if (p.introduction.indexOf('\n') > -1){
-                    var txts = p.introduction.split('\n');
-                    for (var index in txts) {
-                        body += txts[index];
-                        body += '<br>';
-                    }
-                } else {
-                    body += p.introduction;
-                }
+                var converter = new showdown.Converter(),
+                    html      = converter.makeHtml(p.introduction);
+                body += html;
+                // if (html.indexOf('\n') > -1){
+                //     var txts = html.split('\n');
+                //     for (var index in txts) {
+                //         body += txts[index];
+                //         body += '<br>';
+                //     }
+                // } else {
+                //     body += html;
+                // }
                 body += "</div>";
             }
             return head + body + foot;
