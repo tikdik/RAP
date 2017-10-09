@@ -1319,13 +1319,13 @@ function deepCopy(o) {
         },
         TEMPLATE = {            // static template
 
-            "REQUEST_BEGIN"                 : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
-            "REQUEST_BEGIN_EDIT"            : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
+            "REQUEST_BEGIN"                 : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-location\">位置</td><td class=\"head-remark\">备注</td></tr>",
+            "REQUEST_BEGIN_EDIT"            : "<h2>请求参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-location\">位置</td><td class=\"head-remark\">备注</td></tr>",
             "REQUEST_END"                   : "</table>",
             "REQUEST_PARAMETER_ADD_BUTTON"  : "<div class='btns-container'><a href=\"#\" class=\"btn btn-info btn-xs\" onclick=\"ws.addParam('request'); return false;\"><i class='glyphicon glyphicon-plus'></i>添加参数</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href\"#\" class='btn btn-default btn-xs' onclick=\"ws.importJSON(true); return false;\"><i class='glyphicon glyphicon-transfer'></i>导入JSON</a></div>",
 
-            "RESPONSE_BEGIN"                : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
-            "RESPONSE_BEGIN_EDIT"           : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-remark\">备注</td><td class=\"head-location\">位置</td></tr>",
+            "RESPONSE_BEGIN"                : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-location\">位置</td><td class=\"head-remark\">备注</td></tr>",
+            "RESPONSE_BEGIN_EDIT"           : "<h2>响应参数列表</h2><table class=\"table-a\"><tr class=\"head\"><td class=\"head-expander\"></td><td class=\"head-op\">OP</td><td class=\"head-identifier\">变量名</td><td class=\"head-name\">含义</td><td class=\"head-type\">类型</td><td class=\"head-location\">位置</td><td class=\"head-remark\">备注</td></tr>",
             "RESPONSE_END"                  : "</table>",
             "RESPONSE_PARAMETER_ADD_BUTTON" : "<div class='btns-container'><a href=\"#\" class=\"btn btn-info btn-xs\" onclick=\"ws.addParam('response'); return false;\"><i class='glyphicon glyphicon-plus'></i>添加参数</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href\"#\" class='btn btn-default btn-xs' onclick=\"ws.importJSON(); return false;\"><i class='glyphicon glyphicon-transfer'></i>导入JSON</a></div>",
 
@@ -1876,7 +1876,7 @@ function deepCopy(o) {
                 str += getTextareaHtml(oldValue, width, CONFIG.REMARK_MAX_LENGTH);
                 break;
             case "param-location":
-                width = CONFIG.DEFAULT_INPUT_WIDTH;
+                width = CONFIG.DEFAULT_MAX_LENGTH;
                 el = getTd(id, key);
                 // oldValue = b.trim(el.innerHTML)
                 oldValue = b.trim(param.location);
@@ -4070,7 +4070,7 @@ function deepCopy(o) {
                 foot = "</div>";
             if (p.introduction) {
                 body += "<div class='item'>";
-                var converter = new showdown.Converter(),
+                var converter = new showdown.Converter({tables:true}),
                     html      = converter.makeHtml(p.introduction);
                 body += html;
                 // if (html.indexOf('\n') > -1){
@@ -4266,11 +4266,11 @@ function deepCopy(o) {
             str += getPTDHtml(param.id, util.escaper.escapeInH(param.identifier), "identifier", level);
             str += getPTDHtml(param.id, util.escaper.escapeInH(param.name), "name");
             str += getDataTypeEditSelectHtml(param.id, param.dataType);
-            // for remarkFilter, escape after filter processed...
-            str += getPTDHtml(param.id, param.remark, "remark");
             if (param.hasOwnProperty("location") ) {
                 str += getLocationEditSelectHtml(param.id, param.location, "location");
             }
+            // for remarkFilter, escape after filter processed...
+            str += getPTDHtml(param.id, param.remark, "remark");
             str += "</tr>";
 
             for (var i = 0; i < parameterListNum; i++) {
