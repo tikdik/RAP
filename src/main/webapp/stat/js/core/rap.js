@@ -912,6 +912,7 @@ function deepCopy(o) {
         p.parameterList = obj.parameterList;
         p.remark = obj.remark;
         p.validator = obj.validator;
+        p.loction = obj.loction;
     };
 
     /**
@@ -2032,6 +2033,13 @@ function deepCopy(o) {
     /**
      * data type select changed
      */
+    ws.locationSelectChanged = function(parameterId, value) {
+        p.setParameter(parameterId, value, "location");
+    };
+
+    /**
+     * data type select changed
+     */
     ws.dataTypeSelectChanged = function(parameterId, value) {
         p.setParameter(parameterId, value, "dataType");
         if (value == "object" || value == "array<object>") {
@@ -2046,6 +2054,15 @@ function deepCopy(o) {
         b.g("divVersion").innerHTML = p.getVersion() + " -> " + versionUpgrade(p.getVersion(), position);
     };
 
+    /**
+     * data type select key pressed
+     */
+    ws.locationKeyPressed = function(e, parameterId) {
+        if (b.event.getKeyCode(e) == 9) {
+            this.edit(parameterId, "param-location");
+        }
+        b.event.stop(e);
+    };
 
     /**
      * data type select key pressed
@@ -4252,7 +4269,7 @@ function deepCopy(o) {
             // for remarkFilter, escape after filter processed...
             str += getPTDHtml(param.id, param.remark, "remark");
             if (param.hasOwnProperty("location") ) {
-                str += getPTDHtml(param.id, param.location, "location");
+                str += getLocationEditSelectHtml(param.id, param.location, "location");
             }
             str += "</tr>";
 
@@ -4400,6 +4417,35 @@ function deepCopy(o) {
                 + ' rows="20" onblur="ws.finishEdit();">' + value + '</textarea>';
             // return "<input id='" + ELEMENT_ID.EDIT_INPUT + "' class='edit-input' type='text' value='" + value +
             //     "' style='width: " + width +"px' maxlength='" + maxLength + "' onblur='ws.finishEdit();' />";
+        }
+
+        /**
+         * get parameter location edit select html
+         */
+        function getLocationEditSelectHtml(id, type) {
+            var str = "",
+                typeList = [
+                    '',
+                    'body',
+                    'query',
+                    'head'
+                ],
+                typeListNum = typeList.length;
+
+            str += "<td id='td-param-dataType-"+ id +"' class='td-param dataType'>";
+            if (_isEditMode) {
+                str += "<select id='select-dataType-"+ id + "' class='select-dataType' on" + CONFIG.KEYPRESS_EVENT_NAME + "='ws.locationKeyPressed(event, " +
+                    id + ");' onchange='ws.locationSelectChanged(" + id + ", this.value);'>";
+                for (var i = 0; i < typeListNum; i++) {
+                    var item = typeList[i];
+                    str += "<option value='"+ item +"'" + (item == type ? " selected='true'" : "") + ">" + util.escaper.escapeInH(item) + "</option>";
+                }
+                str += "</select>";
+            } else {
+                str += util.escaper.escapeInH(type);
+            }
+            str += "</td>";
+            return str;
         }
 
         /**
